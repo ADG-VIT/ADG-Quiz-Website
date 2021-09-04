@@ -1,3 +1,5 @@
+// getting a bunch of DOM elements using querySelectors
+
 const heading = document.querySelector('.heading');
 const question = document.querySelector('.question');
 const prev = document.querySelector('.prev');
@@ -7,9 +9,14 @@ const labels = document.querySelectorAll('label');
 const inputs = document.querySelectorAll('input');
 const url = 'https://task-3-api.herokuapp.com/questions';
 
+//defining some variables and arrays that will help us keep
+//track of question, options of various listed questions
+
 const answers = [false, false, false, false, false, false, false, false, false, false];
 const options = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 corOpt = ['A', 'B', 'C', 'D'];
+
+//this is sleep function designed to sync. stop the thread for 1 sec
 
 function sleep() {
     return new Promise((resolve, reject) => {
@@ -19,13 +26,24 @@ function sleep() {
     })
 }
 
+//data will recieve the json data in it
+//counter will represent the question number counter = 0 is first question
+
 let data, counter = 0;
+
+//this function will prompt fetch API to get data, axios can be used here too (more suitable)
+//we get data from JSON and .json() is called on it to wait till we convert the data to js object
+//refer how Fetch API and .json() works
+
 async function getData() {
     const resp = await fetch(url);
     data = await resp.json();
 }
 
 getData();
+
+//when update is called on a counter, the (counter+1)th question will be updated
+//by updated we mean the selected option will be CHECKED and text related to the question will be displayed
 
 function update(counter) {
     let obj = data[counter];
@@ -40,6 +58,10 @@ function update(counter) {
     }
 }
 
+//this is an async function that will pause the thread till all the data from API has arrived and turned into object
+// await sleep is required here to relax the thread for 1 sec
+//if this wasnt here the thread will loop contineously and eat up all the RAM and freeze the system
+
 async function loadData() {
     while (true) {
         if (data) { console.log(data); break; }
@@ -49,6 +71,10 @@ async function loadData() {
 }
 
 loadData();
+
+//adding event listners to prev and next buttons
+//these event listeners will save the options and load up the next question
+//by load I mean update(counter ++ or counter--) will be called
 
 
 prev.addEventListener('click', () => {
@@ -86,6 +112,10 @@ next.addEventListener('click', () => {
     }
 })
 
+//this is function that will render the thanks page through DOM manipulation
+//it will also calculate the final score
+//theres a security bug here, try to find it
+
 function thanksPage() {
     const container = document.querySelector('.container');
     container.innerHTML = '';
@@ -96,15 +126,22 @@ function thanksPage() {
     }
     container.innerHTML = `<div class="heading final">You Scored <span class="score">${score}</span> out of 10</div>`;
     const button = document.createElement('a');
-    button.href = "file:///C:/Users/HP/Desktop/Codes_VSC/adg/task3/index.html";
+    button.href = "../index.html";
     button.className += "btn";
     button.innerText = "I WANNA TRY AGAIN";
     container.append(button);
 }
 
+//below is an implementation of timer for 10 minutes in js
+//this is a bit cumbersome try to shorten it
+
 const timeInMinutes = 10;
 let currentTime = Date.parse(new Date());
 let deadline = new Date(currentTime + timeInMinutes * 60 * 1000);
+
+//change is the final game loop
+//breaking of this loop will mean the time has ended and game is over
+//termination of change wil prompt us to thank you page
 
 async function change() {
     while (true) {
