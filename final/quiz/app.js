@@ -135,7 +135,7 @@ function thanksPage() {
 //below is an implementation of timer for 10 minutes in js
 //this is a bit cumbersome try to shorten it
 
-const timeInMinutes = 10;
+const timeInMinutes = 10; //time in minutes
 let currentTime = Date.parse(new Date());
 let deadline = new Date(currentTime + timeInMinutes * 60 * 1000);
 
